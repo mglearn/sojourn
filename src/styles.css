@@ -78,6 +78,27 @@ nav {
   gap: 10px;
   align-items: center;
 }
+.languagePicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 9px;
+  border: 1px solid #ffffff30;
+  border-radius: 3px;
+  color: #e9bd72;
+}
+.languagePicker select {
+  max-width: 112px;
+  border: 0;
+  outline: 0;
+  color: #f6efdf;
+  background: #17383a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.languagePicker option { color: #173233; background: #fff; }
 nav button,
 .back,
 .listen {
@@ -872,6 +893,9 @@ article,
   .brand span:last-child {
     font-size: 11px;
   }
+  .languagePicker { padding: 0 7px; }
+  .languagePicker span { display: none; }
+  .languagePicker select { max-width: 82px; font-size: 11px; }
   .hero h1 {
     font-size: 50px;
   }

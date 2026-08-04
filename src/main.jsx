@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import "./styles.css";
+import { languages, levelText, ui } from "./i18n";
 
 const asset = (name) => `${import.meta.env.BASE_URL}assets/${name}`;
 
@@ -591,13 +592,43 @@ function App() {
     [teacher, setTeacher] = useState(false),
     [sound, setSound] = useState(true),
     [motion, setMotion] = useState(true),
-    [grade, setGrade] = useState("6–8");
-  const L = levels[level];
+    [grade, setGrade] = useState("6–8"),
+    [language, setLanguage] = useState(() => {
+      const query = new URLSearchParams(window.location.search).get("lang");
+      const saved = localStorage.getItem("sojourn-language");
+      const browser = navigator.language?.slice(0, 2);
+      return languages.some((x) => x.code === query)
+        ? query
+        : languages.some((x) => x.code === saved)
+          ? saved
+          : languages.some((x) => x.code === browser)
+            ? browser
+            : "en";
+    });
+  const t = ui[language] || ui.en;
+  const translatedLevel = levelText[language]?.[level];
+  const L = translatedLevel
+    ? {
+        ...levels[level],
+        ...translatedLevel,
+        facts: levels[level].facts.map((fact, i) => ({
+          ...fact,
+          ...translatedLevel.facts[i],
+        })),
+      }
+    : levels[level];
   const complete = found.length === 3;
   const won = answer === L.correct;
   useEffect(() => {
     document.documentElement.dataset.motion = motion ? "on" : "off";
   }, [motion]);
+  useEffect(() => {
+    localStorage.setItem("sojourn-language", language);
+    document.documentElement.lang = language === "zh" ? "zh-Hans" : language;
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", language);
+    window.history.replaceState({}, "", url);
+  }, [language]);
   const openLesson = (hash = "#ready-to-teach-investigation") => {
     setTeacher(false);
     setScreen("lesson");
@@ -669,11 +700,17 @@ function App() {
           </span>
         </button>
         <nav>
+          <label className="languagePicker">
+            <span aria-hidden="true">🌐</span>
+            <select aria-label="Language" value={language} onChange={(e) => setLanguage(e.target.value)}>
+              {languages.map((item) => <option key={item.code} value={item.code}>{item.label}</option>)}
+            </select>
+          </label>
           <button onClick={() => setScreen("map")}>
-            <Map /> Journey map
+            <Map /> {t.journey}
           </button>
           <button onClick={() => setTeacher(true)}>
-            <BookOpen /> Teacher mode
+            <BookOpen /> {t.teacher}
           </button>
           <button
             className="iconbtn"
@@ -690,33 +727,25 @@ function App() {
             <div className="heroShade"></div>
             <div className="heroCopy">
               <div className="eyebrow">
-                <Compass /> AN INTERACTIVE HISTORY JOURNEY
+                <Compass /> {t.heroKicker}
               </div>
-              <h1>
-                Every right has
-                <br />
-                <em>a road behind it.</em>
-              </h1>
-              <p>
-                Travel through five turning points in the long movement for
-                voting rights. Read the evidence. Make the case. Carry the story
-                forward.
-              </p>
+              <h1>{t.heroTitle}</h1>
+              <p>{t.heroBody}</p>
               <div className="heroActions">
                 <button
                   className="primary"
                   onClick={() => start(done.length < 5 ? done.length : 0)}
                 >
-                  Begin the journey <ArrowRight />
+                  {t.begin} <ArrowRight />
                 </button>
                 <button className="quiet" onClick={() => setScreen("map")}>
-                  Explore the map
+                  {t.explore}
                 </button>
               </div>
               <div className="meta">
-                <span>5 HISTORIC STOPS</span>
+                <span>{t.stops}</span>
                 <span>•</span>
-                <span>NO TIMER · NO LOST LIVES</span>
+                <span>{t.noPenalty}</span>
               </div>
             </div>
             <div className="scrollCue">
@@ -727,12 +756,9 @@ function App() {
         {screen === "map" && (
           <section className="mapPage">
             <div className="pageIntro">
-              <span className="eyebrow">YOUR ROUTE THROUGH HISTORY</span>
-              <h2>The Journey Map</h2>
-              <p>
-                Each stop holds three pieces of evidence and one civic
-                challenge. Progress is saved on this device.
-              </p>
+              <span className="eyebrow">{t.route}</span>
+              <h2>{t.mapTitle}</h2>
+              <p>{t.mapBody}</p>
             </div>
             <div className="route">
               {levels.map((x, i) => (
@@ -751,13 +777,13 @@ function App() {
                   </span>
                   <span className="stopText">
                     <small>{x.year}</small>
-                    <b>{x.short}</b>
+                    <b>{levelText[language]?.[i]?.short || x.short}</b>
                     <em>
                       {done.includes(i)
-                        ? x.artifact
+                        ? levelText[language]?.[i]?.artifact || x.artifact
                         : i === done.length
-                          ? "Ready to explore"
-                          : "Complete earlier stops"}
+                          ? t.ready
+                          : t.earlier}
                     </em>
                   </span>
                   {i > done.length ? <LockKeyhole /> : <ArrowRight />}
@@ -770,14 +796,14 @@ function App() {
           <section className="game" style={{ "--accent": L.color }}>
             <aside>
               <button className="back" onClick={() => setScreen("map")}>
-                <ChevronLeft /> Journey map
+                <ChevronLeft /> {t.journey}
               </button>
-              <div className="chapter">CHAPTER {level + 1} OF 5</div>
+              <div className="chapter">{t.chapter} {level + 1} {t.of} 5</div>
               <div className="bigYear">{L.year}</div>
               <h2>{L.short}</h2>
               <p>{L.place}</p>
               <div className="progressLabel">
-                <span>EVIDENCE COLLECTED</span>
+                <span>{t.collected}</span>
                 <b>{found.length} / 3</b>
               </div>
               <div className="progress">
@@ -787,12 +813,12 @@ function App() {
                 className="listen"
                 onClick={() => speak(`${L.title}. ${L.intro}`)}
               >
-                <Headphones /> Listen to this chapter
+                <Headphones /> {t.listen}
               </button>
             </aside>
             <div className="chapterMain">
               <span className="eyebrow">
-                {complete ? "MILESTONE CHALLENGE" : "EXPLORE THE EVIDENCE"}
+                {complete ? t.challenge : t.exploreEvidence}
               </span>
               <h1>{L.title}</h1>
               <p className="lead">{L.intro}</p>
@@ -801,8 +827,8 @@ function App() {
                   <figure className="chapterPlate">
                     <img src={L.image} alt={L.alt} />
                     <figcaption>
-                      <span>SCENE FROM THE JOURNEY</span>
-                      <p>Original illustration in the style of a period archival print</p>
+                      <span>{t.scene}</span>
+                      <p>{t.sceneNote}</p>
                     </figcaption>
                   </figure>
                   <div className="evidenceGrid">
@@ -822,17 +848,14 @@ function App() {
                           onClick={() => collect(i)}
                           disabled={found.includes(i)}
                         >
-                          {found.includes(i)
-                            ? "Evidence collected"
-                            : "Add to field notes"}{" "}
+                          {found.includes(i) ? t.added : t.add}{" "}
                           <ArrowRight />
                         </button>
                       </article>
                     ))}
                   </div>
                   <div className="nudge">
-                    <Lightbulb /> Collect all three evidence cards to unlock the
-                    civic challenge.
+                    <Lightbulb /> {t.nudge}
                   </div>
                 </>
               ) : (
@@ -840,7 +863,7 @@ function App() {
                   <div className="challengeHead">
                     <span className="seal">{L.mark}</span>
                     <div>
-                      <small>USE YOUR EVIDENCE</small>
+                      <small>{t.useEvidence}</small>
                       <h3>{L.question}</h3>
                     </div>
                   </div>
@@ -870,9 +893,7 @@ function App() {
                   {answer !== null && (
                     <div className={"feedback " + (won ? "success" : "try")}>
                       <b>
-                        {won
-                          ? "That’s well supported."
-                          : "Not quite—try another piece of evidence."}
+                        {won ? t.correct : t.retry}
                       </b>
                       <p>{won ? L.explain : L.hint}</p>
                     </div>
@@ -881,14 +902,12 @@ function App() {
                     <div className="earned">
                       <div className="artifact">{L.mark}</div>
                       <div>
-                        <small>MILESTONE EARNED</small>
+                        <small>{t.earned}</small>
                         <h3>{L.artifact}</h3>
-                        <p>Added to your journey map</p>
+                        <p>{t.mapAdded}</p>
                       </div>
                       <button className="primary" onClick={next}>
-                        {level === 4
-                          ? "Complete the journey"
-                          : "Continue onward"}{" "}
+                        {level === 4 ? t.complete : t.continue}{" "}
                         <ArrowRight />
                       </button>
                     </div>
