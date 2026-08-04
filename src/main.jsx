@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import "./styles.css";
 
+const asset = (name) => `${import.meta.env.BASE_URL}assets/${name}`;
+
 const levels = [
   {
     year: "1848",
@@ -31,7 +33,7 @@ const levels = [
     artifact: "Voice Badge",
     mark: "✦",
     color: "#d69a4a",
-    image: "/assets/evidence-1848.webp",
+    image: asset("evidence-1848.webp"),
     alt: "A hand-colored engraving of an 1848 convention assembly listening to a woman read at a lectern",
     intro:
       "Inside this meeting hall, ordinary people are doing something extraordinary: naming injustice in public. Gather the evidence they used to make their case.",
@@ -75,7 +77,7 @@ const levels = [
     artifact: "Coalition Key",
     mark: "⌘",
     color: "#b96452",
-    image: "/assets/evidence-coalition.webp",
+    image: asset("evidence-coalition.webp"),
     alt: "A hand-colored engraving of a diverse coalition speaking, printing newspapers, and organizing petitions",
     intro:
       "A movement grows through speeches, newspapers, conventions, clubs, and petitions. Different leaders bring different experiences—and do not always agree.",
@@ -119,7 +121,7 @@ const levels = [
     artifact: "State Star",
     mark: "★",
     color: "#6f9a91",
-    image: "/assets/evidence-states.webp",
+    image: asset("evidence-states.webp"),
     alt: "A period engraving of women registering voters beside a western railway and courthouse",
     intro:
       "Before a federal amendment, organizers tested state strategies. The trail moved unevenly—sometimes forward, sometimes around a barrier.",
@@ -163,7 +165,7 @@ const levels = [
     artifact: "19th Amendment Seal",
     mark: "◉",
     color: "#d49a56",
-    image: "/assets/evidence-ratification.webp",
+    image: asset("evidence-ratification.webp"),
     alt: "A hand-tinted newspaper engraving of organizers carrying letters and vote tallies through a state capitol",
     intro:
       "Congress has passed the amendment. Now three-fourths of the states must ratify it. Follow the constitutional path—then unlock Tennessee’s deciding vote.",
@@ -206,7 +208,7 @@ const levels = [
     artifact: "Equality Torch",
     mark: "♨",
     color: "#cf7257",
-    image: "/assets/evidence-equality.webp",
+    image: asset("evidence-equality.webp"),
     alt: "A period linocut of diverse citizens and organizers navigating registration barriers toward a polling place",
     intro:
       "The 19th Amendment barred voting discrimination based on sex. But other barriers still blocked many citizens. History asks us to hold progress and unfinished work together.",
@@ -262,9 +264,9 @@ function LessonPage({ onBack }) {
           <Printer /> Print lesson
         </button>
       </div>
-      <div className="lessonHero">
+      <div className="lessonHero" id="ready-to-teach-investigation">
         <img
-          src="/assets/ace-framework-womens-equality.png"
+          src={asset("ace-framework-womens-equality.png")}
           alt="ACE Framework for Women’s Equality Day: Articulate, Connect, and Extend"
         />
         <div>
@@ -289,7 +291,7 @@ function LessonPage({ onBack }) {
             that change possible, and what barriers remained?
           </h2>
         </section>
-        <h2>The ACE Framework</h2>
+        <h2 id="ace-framework">The ACE Framework</h2>
         <div className="aceGrid">
           <section>
             <b>A</b>
@@ -577,7 +579,10 @@ function LessonPage({ onBack }) {
 }
 
 function App() {
-  const [screen, setScreen] = useState("home"),
+  const lessonHashes = ["#ace-framework", "#ready-to-teach-investigation"];
+  const [screen, setScreen] = useState(() =>
+      lessonHashes.includes(window.location.hash) ? "lesson" : "home",
+    ),
     [level, setLevel] = useState(0),
     [found, setFound] = useState([]),
     [answer, setAnswer] = useState(null),
@@ -593,6 +598,28 @@ function App() {
   useEffect(() => {
     document.documentElement.dataset.motion = motion ? "on" : "off";
   }, [motion]);
+  const openLesson = (hash = "#ready-to-teach-investigation") => {
+    setTeacher(false);
+    setScreen("lesson");
+    window.location.hash = hash;
+    window.setTimeout(() => {
+      document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
+    }, 0);
+  };
+  useEffect(() => {
+    const routeFromHash = () => {
+      if (lessonHashes.includes(window.location.hash)) {
+        setScreen("lesson");
+        window.setTimeout(
+          () => document.querySelector(window.location.hash)?.scrollIntoView(),
+          0,
+        );
+      }
+    };
+    routeFromHash();
+    window.addEventListener("hashchange", routeFromHash);
+    return () => window.removeEventListener("hashchange", routeFromHash);
+  }, []);
   const start = (i = 0) => {
     setLevel(i);
     setFound([]);
@@ -968,13 +995,16 @@ function App() {
             </p>
             <button
               className="lessonLink"
-              onClick={() => {
-                setTeacher(false);
-                setScreen("lesson");
-                window.scrollTo(0, 0);
-              }}
+              onClick={() => openLesson("#ready-to-teach-investigation")}
             >
-              <span><b>ACE Framework lesson plan</b><small>Grades 6–12 · 50–60 minutes</small></span>
+              <span><b>Ready-to-Teach Investigation</b><small>Grades 6–12 · 50–60 minutes</small></span>
+              <ArrowRight />
+            </button>
+            <button
+              className="lessonLink"
+              onClick={() => openLesson("#ace-framework")}
+            >
+              <span><b>ACE Framework</b><small>Articulate · Connect · Extend</small></span>
               <ArrowRight />
             </button>
             <h3>Discussion prompts</h3>
