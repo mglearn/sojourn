@@ -1048,26 +1048,30 @@ function App() {
             <h3>Source shelf</h3>
             <div className="sources">
               <a
-                href="https://www.loc.gov/resource/rbcmil.scrp4006701/"
+                href="https://www.loc.gov/exhibitions/women-fight-for-the-vote/about-this-exhibition/seneca-falls-and-building-a-movement-1776-1890/seneca-falls-and-the-start-of-annual-conventions/declaration-of-sentiments/"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 Library of Congress: Declaration of Sentiments <ExternalLink />
               </a>
               <a
                 href="https://www.archives.gov/milestone-documents/19th-amendment"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 National Archives: 19th Amendment <ExternalLink />
               </a>
               <a
-                href="https://www.nps.gov/articles/000/women-s-suffrage-in-texas.htm"
+                href="https://home.nps.gov/subjects/womenshistory/womens-suffrage-timeline.htm"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 National Park Service: Suffrage in Texas <ExternalLink />
               </a>
               <a
                 href="https://www.archives.gov/milestone-documents/voting-rights-act"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 National Archives: Voting Rights Act <ExternalLink />
               </a>
