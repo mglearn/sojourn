@@ -6,11 +6,14 @@ import {
   Check,
   ChevronLeft,
   Compass,
+  Copy,
+  Download,
   ExternalLink,
   Headphones,
   Lightbulb,
   LockKeyhole,
   Map,
+  NotebookPen,
   Pause,
   Play,
   Printer,
@@ -245,6 +248,119 @@ const levels = [
       "The amendment transformed the Constitution, but it did not erase barriers based on race, citizenship, or discriminatory administration.",
   },
 ];
+
+const emptyJournal = () => ({ overview: "", stops: Array(5).fill("") });
+
+function readJournal() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("sojourn-journal"));
+    return {
+      overview: typeof saved?.overview === "string" ? saved.overview : "",
+      stops: Array.from({ length: 5 }, (_, i) =>
+        typeof saved?.stops?.[i] === "string" ? saved.stops[i] : "",
+      ),
+    };
+  } catch {
+    return emptyJournal();
+  }
+}
+
+function journalText(journal) {
+  const sections = levels.map(
+    (item, i) =>
+      `STOP ${i + 1} — ${item.year}: ${item.short}\n${journal.stops[i] || "(No notes yet)"}`,
+  );
+  return `SUFFRAGE SOJOURN — STUDENT JOURNAL\n\nWHOLE-JOURNEY REFLECTION\n${journal.overview || "(No notes yet)"}\n\n${sections.join("\n\n")}`;
+}
+
+function Journal({ journal, setJournal, activeStop, onClose }) {
+  const [section, setSection] = useState(
+    Number.isInteger(activeStop) ? activeStop : "overview",
+  );
+  const [status, setStatus] = useState("Saved on this device");
+  const isOverview = section === "overview";
+  const value = isOverview ? journal.overview : journal.stops[section];
+  const updateNotes = (notes) => {
+    setStatus("Saving…");
+    setJournal((current) =>
+      isOverview
+        ? { ...current, overview: notes }
+        : {
+            ...current,
+            stops: current.stops.map((entry, i) =>
+              i === section ? notes : entry,
+            ),
+          },
+    );
+  };
+  const copyJournal = async () => {
+    await navigator.clipboard.writeText(journalText(journal));
+    setStatus("Journal copied");
+  };
+  const downloadJournal = () => {
+    const blob = new Blob([journalText(journal)], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "suffrage-sojourn-journal.txt";
+    link.click();
+    URL.revokeObjectURL(url);
+    setStatus("Journal downloaded");
+  };
+  const printJournal = () => {
+    document.body.classList.add("journal-printing");
+    window.print();
+    window.setTimeout(() => document.body.classList.remove("journal-printing"), 0);
+  };
+  const clearJournal = () => {
+    if (window.confirm("Erase every note in this journal? This cannot be undone.")) {
+      setJournal(emptyJournal());
+      setStatus("Journal cleared");
+    }
+  };
+  useEffect(() => {
+    const timer = window.setTimeout(() => setStatus("Saved on this device"), 350);
+    return () => window.clearTimeout(timer);
+  }, [journal]);
+  return (
+    <div className="journalLayer">
+      <button className="journalBackdrop" aria-label="Close journal" onClick={onClose} />
+      <aside className="journalDrawer" role="dialog" aria-modal="true" aria-labelledby="journal-title">
+        <div className="journalHead">
+          <div>
+            <span className="eyebrow"><NotebookPen /> MY FIELD NOTES</span>
+            <h2 id="journal-title">Student journal</h2>
+          </div>
+          <button className="close" onClick={onClose} aria-label="Close journal"><X /></button>
+        </div>
+        <p className="journalPrivacy">Notes save automatically in this browser. Download a copy before changing devices or clearing browser data.</p>
+        <label className="journalSection">
+          Journal section
+          <select value={section} onChange={(e) => setSection(e.target.value === "overview" ? "overview" : Number(e.target.value))}>
+            <option value="overview">Whole-journey reflection</option>
+            {levels.map((item, i) => <option key={item.year} value={i}>Stop {i + 1}: {item.year} — {item.short}</option>)}
+          </select>
+        </label>
+        <div className="journalPrompt">
+          <b>{isOverview ? "Reflection prompt" : `Stop ${section + 1} prompt`}</b>
+          <p>{isOverview ? "What changed, what remained unfinished, and what evidence most shaped your thinking?" : levels[section].question}</p>
+        </div>
+        <label className="journalNotes">
+          Your notes
+          <textarea value={value} onChange={(e) => updateNotes(e.target.value)} placeholder="Type your observations, evidence, questions, and connections here…" />
+        </label>
+        <div className="journalStatus" role="status">{status}</div>
+        <div className="journalActions">
+          <button onClick={copyJournal}><Copy /> Copy</button>
+          <button onClick={downloadJournal}><Download /> Download</button>
+          <button onClick={printJournal}><Printer /> Print</button>
+          <button className="journalClear" onClick={clearJournal}><RotateCcw /> Erase</button>
+        </div>
+        <div className="journalPrintOnly"><pre>{journalText(journal)}</pre></div>
+      </aside>
+    </div>
+  );
+}
 
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
@@ -588,6 +704,8 @@ function App() {
     [found, setFound] = useState([]),
     [answer, setAnswer] = useState(null),
     [done, setDone] = useState([]),
+    [journalOpen, setJournalOpen] = useState(false),
+    [journal, setJournal] = useState(readJournal),
     [settings, setSettings] = useState(false),
     [teacher, setTeacher] = useState(false),
     [sound, setSound] = useState(true),
@@ -686,6 +804,9 @@ function App() {
   useEffect(() => {
     localStorage.setItem("sojourn-progress", JSON.stringify(done));
   }, [done]);
+  useEffect(() => {
+    localStorage.setItem("sojourn-journal", JSON.stringify(journal));
+  }, [journal]);
   return (
     <div className="app">
       <header>
@@ -711,6 +832,9 @@ function App() {
           </button>
           <button onClick={() => setTeacher(true)}>
             <BookOpen /> {t.teacher}
+          </button>
+          <button className="journalNav" onClick={() => setJournalOpen(true)}>
+            <NotebookPen /> Journal
           </button>
           <button
             className="iconbtn"
@@ -1078,6 +1202,14 @@ function App() {
             </div>
           </div>
         </div>
+      )}
+      {journalOpen && (
+        <Journal
+          journal={journal}
+          setJournal={setJournal}
+          activeStop={screen === "game" ? level : null}
+          onClose={() => setJournalOpen(false)}
+        />
       )}
     </div>
   );

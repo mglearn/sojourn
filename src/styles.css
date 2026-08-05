@@ -120,6 +120,131 @@ svg {
   height: 42px;
   justify-content: center;
 }
+.journalNav {
+  color: #efc274;
+}
+.journalLayer {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  pointer-events: none;
+}
+.journalBackdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: #06191b99;
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+  cursor: default;
+}
+.journalDrawer {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: min(520px, 92vw);
+  overflow-y: auto;
+  padding: 34px;
+  background: #f7f0e2;
+  color: #173233;
+  box-shadow: -20px 0 70px #0007;
+  pointer-events: auto;
+  animation: journalIn .25s ease-out;
+}
+@keyframes journalIn {
+  from { transform: translateX(100%); }
+}
+.journalHead {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 28px;
+}
+.journalHead h2 {
+  margin: 10px 0 4px;
+  font: 38px "Libre Caslon Display";
+}
+.journalPrivacy {
+  margin: 10px 0 24px;
+  color: #61716d;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.journalSection,
+.journalNotes {
+  display: grid;
+  gap: 8px;
+  color: #294845;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.journalSection select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #b9ad99;
+  background: #fffdf8;
+  color: #173233;
+}
+.journalPrompt {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border-left: 4px solid #d59c4b;
+  background: #e8dfcf;
+}
+.journalPrompt b {
+  color: #a56822;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.journalPrompt p {
+  margin: 6px 0 0;
+  font: 17px/1.45 "Libre Caslon Display";
+}
+.journalNotes textarea {
+  min-height: 300px;
+  width: 100%;
+  resize: vertical;
+  padding: 18px;
+  border: 1px solid #c9bca7;
+  background: repeating-linear-gradient(#fffdf8, #fffdf8 29px, #e2d8c8 30px);
+  color: #173233;
+  font: 15px/30px "DM Sans", sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.journalNotes textarea:focus {
+  outline: 2px solid #c48636;
+  outline-offset: 2px;
+}
+.journalStatus {
+  min-height: 18px;
+  margin: 8px 0;
+  color: #667773;
+  font-size: 10px;
+}
+.journalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.journalActions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 11px;
+  border: 1px solid #b9ad99;
+  background: #fffdf8;
+  color: #173233;
+  cursor: pointer;
+  font-size: 11px;
+}
+.journalActions .journalClear {
+  margin-left: auto;
+  color: #985344;
+}
+.journalPrintOnly { display: none; }
 .hero {
   min-height: 100vh;
   padding-top: 76px;
@@ -943,6 +1068,9 @@ article,
   .procedure > section > p, .procedure > section > div { grid-column: 1; }
   .organizer { grid-template-columns: 1fr; }
   .chapterPlate { height: 210px; }
+  .journalDrawer { width: 100%; padding: 26px 20px; }
+  .journalNotes textarea { min-height: 42vh; }
+  .journalActions .journalClear { margin-left: 0; }
 }
 
 @media print {
@@ -955,6 +1083,21 @@ article,
   .lessonBody { max-width: none; padding: 10px; }
   .aceGrid { grid-template-columns: repeat(3, 1fr); }
   .procedure > section { break-inside: avoid; }
+  body.journal-printing > #root .app > * { display: none!important; }
+  body.journal-printing > #root .app > .journalLayer,
+  body.journal-printing .journalDrawer,
+  body.journal-printing .journalPrintOnly { display: block!important; }
+  body.journal-printing .journalLayer,
+  body.journal-printing .journalDrawer { position: static; width: auto; overflow: visible; padding: 0; box-shadow: none; }
+  body.journal-printing .journalBackdrop,
+  body.journal-printing .journalHead,
+  body.journal-printing .journalPrivacy,
+  body.journal-printing .journalSection,
+  body.journal-printing .journalPrompt,
+  body.journal-printing .journalNotes,
+  body.journal-printing .journalStatus,
+  body.journal-printing .journalActions { display: none!important; }
+  body.journal-printing .journalPrintOnly pre { white-space: pre-wrap; color: #111; font: 12pt/1.5 Georgia, serif; }
 }
 html[data-motion="off"] *,
 html[data-motion="off"] *:before {
