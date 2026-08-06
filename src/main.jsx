@@ -265,23 +265,28 @@ function readJournal() {
   }
 }
 
-function journalText(journal) {
+function journalText(journal, t, language) {
+  const localizedLevels = levelText[language] || [];
   const sections = levels.map(
-    (item, i) =>
-      `STOP ${i + 1} — ${item.year}: ${item.short}\n${journal.stops[i] || "(No notes yet)"}`,
+    (item, i) => {
+      const localized = localizedLevels[i] || item;
+      return `${t.journalStop.toUpperCase()} ${i + 1} — ${item.year}: ${localized.short}\n${journal.stops[i] || t.journalNoNotes}`;
+    },
   );
-  return `SUFFRAGE SOJOURN — STUDENT JOURNAL\n\nWHOLE-JOURNEY REFLECTION\n${journal.overview || "(No notes yet)"}\n\n${sections.join("\n\n")}`;
+  return `${t.journalExportTitle}\n\n${t.journalExportOverview}\n${journal.overview || t.journalNoNotes}\n\n${sections.join("\n\n")}`;
 }
 
-function Journal({ journal, setJournal, activeStop, onClose }) {
+function Journal({ journal, setJournal, activeStop, onClose, language, t }) {
   const [section, setSection] = useState(
     Number.isInteger(activeStop) ? activeStop : "overview",
   );
-  const [status, setStatus] = useState("Saved on this device");
+  const [status, setStatus] = useState(t.journalSaved);
   const isOverview = section === "overview";
+  const localizedLevels = levelText[language] || [];
+  const selectedLevel = isOverview ? null : (localizedLevels[section] || levels[section]);
   const value = isOverview ? journal.overview : journal.stops[section];
   const updateNotes = (notes) => {
-    setStatus("Saving…");
+    setStatus(t.journalSaving);
     setJournal((current) =>
       isOverview
         ? { ...current, overview: notes }
@@ -294,18 +299,18 @@ function Journal({ journal, setJournal, activeStop, onClose }) {
     );
   };
   const copyJournal = async () => {
-    await navigator.clipboard.writeText(journalText(journal));
-    setStatus("Journal copied");
+    await navigator.clipboard.writeText(journalText(journal, t, language));
+    setStatus(t.journalCopied);
   };
   const downloadJournal = () => {
-    const blob = new Blob([journalText(journal)], { type: "text/plain" });
+    const blob = new Blob([journalText(journal, t, language)], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = "suffrage-sojourn-journal.txt";
     link.click();
     URL.revokeObjectURL(url);
-    setStatus("Journal downloaded");
+    setStatus(t.journalDownloaded);
   };
   const printJournal = () => {
     document.body.classList.add("journal-printing");
@@ -313,50 +318,50 @@ function Journal({ journal, setJournal, activeStop, onClose }) {
     window.setTimeout(() => document.body.classList.remove("journal-printing"), 0);
   };
   const clearJournal = () => {
-    if (window.confirm("Erase every note in this journal? This cannot be undone.")) {
+    if (window.confirm(t.journalConfirmErase)) {
       setJournal(emptyJournal());
-      setStatus("Journal cleared");
+      setStatus(t.journalCleared);
     }
   };
   useEffect(() => {
-    const timer = window.setTimeout(() => setStatus("Saved on this device"), 350);
+    const timer = window.setTimeout(() => setStatus(t.journalSaved), 350);
     return () => window.clearTimeout(timer);
-  }, [journal]);
+  }, [journal, t.journalSaved]);
   return (
     <div className="journalLayer">
-      <button className="journalBackdrop" aria-label="Close journal" onClick={onClose} />
+      <button className="journalBackdrop" aria-label={t.journalClose} onClick={onClose} />
       <aside className="journalDrawer" role="dialog" aria-modal="true" aria-labelledby="journal-title">
         <div className="journalHead">
           <div>
-            <span className="eyebrow"><NotebookPen /> MY FIELD NOTES</span>
-            <h2 id="journal-title">Student journal</h2>
+            <span className="eyebrow"><NotebookPen /> {t.journalFieldNotes}</span>
+            <h2 id="journal-title">{t.journalTitle}</h2>
           </div>
-          <button className="close" onClick={onClose} aria-label="Close journal"><X /></button>
+          <button className="close" onClick={onClose} aria-label={t.journalClose}><X /></button>
         </div>
-        <p className="journalPrivacy">Notes save automatically in this browser. Download a copy before changing devices or clearing browser data.</p>
+        <p className="journalPrivacy">{t.journalPrivacy}</p>
         <label className="journalSection">
-          Journal section
+          {t.journalSection}
           <select value={section} onChange={(e) => setSection(e.target.value === "overview" ? "overview" : Number(e.target.value))}>
-            <option value="overview">Whole-journey reflection</option>
-            {levels.map((item, i) => <option key={item.year} value={i}>Stop {i + 1}: {item.year} — {item.short}</option>)}
+            <option value="overview">{t.journalOverview}</option>
+            {levels.map((item, i) => <option key={item.year} value={i}>{t.journalStop} {i + 1}: {item.year} — {(localizedLevels[i] || item).short}</option>)}
           </select>
         </label>
         <div className="journalPrompt">
-          <b>{isOverview ? "Reflection prompt" : `Stop ${section + 1} prompt`}</b>
-          <p>{isOverview ? "What changed, what remained unfinished, and what evidence most shaped your thinking?" : levels[section].question}</p>
+          <b>{isOverview ? t.journalReflectionPrompt : `${t.journalStop} ${section + 1} — ${t.journalStopPrompt}`}</b>
+          <p>{isOverview ? t.journalOverviewQuestion : selectedLevel.question}</p>
         </div>
         <label className="journalNotes">
-          Your notes
-          <textarea value={value} onChange={(e) => updateNotes(e.target.value)} placeholder="Type your observations, evidence, questions, and connections here…" />
+          {t.journalNotes}
+          <textarea value={value} onChange={(e) => updateNotes(e.target.value)} placeholder={t.journalPlaceholder} />
         </label>
         <div className="journalStatus" role="status">{status}</div>
         <div className="journalActions">
-          <button onClick={copyJournal}><Copy /> Copy</button>
-          <button onClick={downloadJournal}><Download /> Download</button>
-          <button onClick={printJournal}><Printer /> Print</button>
-          <button className="journalClear" onClick={clearJournal}><RotateCcw /> Erase</button>
+          <button onClick={copyJournal}><Copy /> {t.journalCopy}</button>
+          <button onClick={downloadJournal}><Download /> {t.journalDownload}</button>
+          <button onClick={printJournal}><Printer /> {t.journalPrint}</button>
+          <button className="journalClear" onClick={clearJournal}><RotateCcw /> {t.journalErase}</button>
         </div>
-        <div className="journalPrintOnly"><pre>{journalText(journal)}</pre></div>
+        <div className="journalPrintOnly"><pre>{journalText(journal, t, language)}</pre></div>
       </aside>
     </div>
   );
@@ -711,6 +716,9 @@ function App() {
     [sound, setSound] = useState(true),
     [motion, setMotion] = useState(true),
     [grade, setGrade] = useState("6–8"),
+    [certificateName, setCertificateName] = useState(
+      () => localStorage.getItem("sojourn-certificate-name") || "",
+    ),
     [language, setLanguage] = useState(() => {
       const query = new URLSearchParams(window.location.search).get("lang");
       const saved = localStorage.getItem("sojourn-language");
@@ -807,6 +815,27 @@ function App() {
   useEffect(() => {
     localStorage.setItem("sojourn-journal", JSON.stringify(journal));
   }, [journal]);
+  const certificateDate = new Intl.DateTimeFormat(
+    language === "zh" ? "zh-CN" : language,
+    { year: "numeric", month: "long", day: "numeric" },
+  ).format(new Date());
+  const prepareCertificate = (event) => {
+    event.preventDefault();
+    const name = certificateName.trim();
+    if (!name) return;
+    setCertificateName(name);
+    localStorage.setItem("sojourn-certificate-name", name);
+    setScreen("certificate");
+  };
+  const printCertificate = () => {
+    document.body.classList.add("certificate-printing");
+    window.addEventListener(
+      "afterprint",
+      () => document.body.classList.remove("certificate-printing"),
+      { once: true },
+    );
+    window.print();
+  };
   return (
     <div className="app">
       <header>
@@ -834,7 +863,7 @@ function App() {
             <BookOpen /> {t.teacher}
           </button>
           <button className="journalNav" onClick={() => setJournalOpen(true)}>
-            <NotebookPen /> Journal
+            <NotebookPen /> {t.journal}
           </button>
           <button
             className="iconbtn"
@@ -1046,31 +1075,78 @@ function App() {
             <div className="torch">✦</div>
             <span className="eyebrow">JOURNEY COMPLETE</span>
             <h1>
-              The road continues
+              Your journey is
               <br />
-              <em>with you.</em>
+              <em>complete.</em>
             </h1>
             <p>
               You gathered evidence across 172 years of organizing. The lesson
               of the journey is not that progress was inevitable—it is that
               people built it, together, and kept going.
             </p>
-            <div className="badges">
-              {levels.map((x) => (
-                <div>
-                  <span>{x.mark}</span>
-                  <small>{x.artifact}</small>
+            <form className="certificateNameForm" onSubmit={prepareCertificate}>
+              <span className="eyebrow">PREPARE YOUR CERTIFICATE</span>
+              <label htmlFor="certificate-name">Name as it should appear</label>
+              <input
+                id="certificate-name"
+                type="text"
+                value={certificateName}
+                onChange={(event) => setCertificateName(event.target.value)}
+                autoComplete="name"
+                maxLength="70"
+                placeholder="Enter your full name"
+                required
+              />
+              <small>Your name stays on this device and is not transmitted.</small>
+              <button className="primary" type="submit">
+                View achievement certificate <ArrowRight />
+              </button>
+            </form>
+          </section>
+        )}
+        {screen === "certificate" && (
+          <section className="certificateScreen">
+            <div className="certificateActions" aria-label="Certificate actions">
+              <button className="quiet dark" onClick={() => setScreen("finish")}>
+                <ChevronLeft /> Edit name
+              </button>
+              <button className="primary" onClick={printCertificate}>
+                Print certificate <Printer />
+              </button>
+            </div>
+            <article className="certificate" aria-label={`Achievement certificate for ${certificateName}`}>
+              <div className="certificateInner">
+                <div className="certificateTorch" role="img" aria-label="Torch of equality">
+                  <svg viewBox="0 0 120 180" aria-hidden="true">
+                    <path className="flameOuter" d="M61 5c8 28 29 35 28 61-1 19-13 35-30 35S28 87 29 67C30 44 50 32 61 5Z" />
+                    <path className="flameInner" d="M60 38c3 13 14 19 13 31 0 9-6 17-14 17s-14-7-14-16c0-11 10-18 15-32Z" />
+                    <path className="torchBowl" d="M25 95h70l-11 27H36L25 95Z" />
+                    <path className="torchStem" d="M48 119h24l-7 48H55l-7-48Z" />
+                    <path className="torchBase" d="M42 165h36v10H42z" />
+                  </svg>
                 </div>
-              ))}
-            </div>
-            <div className="finishActions">
-              <button className="primary" onClick={() => setTeacher(true)}>
-                Open reflection guide <BookOpen />
-              </button>
-              <button className="quiet dark" onClick={() => setScreen("map")}>
-                Review the journey
-              </button>
-            </div>
+                <div className="certificateKicker">Official Certificate of Achievement</div>
+                <h1>Suffrage Sojourn</h1>
+                <p className="certificatePresented">This certificate is proudly presented to</p>
+                <div className="certificateRecipient">{certificateName}</div>
+                <p className="certificateText">
+                  for successfully completing the Suffrage Sojourn, gathering and evaluating
+                  evidence across five historic stops, and demonstrating an understanding that
+                  the Nineteenth Amendment was a milestone in the continuing journey toward
+                  equal voting access.
+                </p>
+                <div className="certificateMilestones" aria-label="Milestones earned">
+                  {levels.map((item) => (
+                    <span key={item.artifact}>{item.artifact}</span>
+                  ))}
+                </div>
+                <div className="certificateSignatures">
+                  <div><b>{certificateDate}</b><span>Date completed</span></div>
+                  <div><b>Suffrage Sojourn</b><span>Achievement verified</span></div>
+                </div>
+                <div className="certificateSeal" aria-hidden="true">SS</div>
+              </div>
+            </article>
           </section>
         )}
         {screen === "lesson" && (
@@ -1208,6 +1284,8 @@ function App() {
           journal={journal}
           setJournal={setJournal}
           activeStop={screen === "game" ? level : null}
+          language={language}
+          t={t}
           onClose={() => setJournalOpen(false)}
         />
       )}

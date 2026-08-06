@@ -781,6 +781,171 @@ svg {
 .quiet.dark {
   color: #fff;
 }
+.certificateNameForm {
+  width: min(560px, 100%);
+  margin-top: 34px;
+  padding: 30px;
+  text-align: left;
+  background: #f7f1e5;
+  color: #173235;
+  border: 1px solid #e9bd72;
+  box-shadow: 0 22px 55px #06151788;
+}
+.certificateNameForm .eyebrow { color: #886126; }
+.certificateNameForm label {
+  display: block;
+  margin: 18px 0 8px;
+  font-weight: 800;
+}
+.certificateNameForm input {
+  width: 100%;
+  border: 1px solid #a99b81;
+  border-radius: 2px;
+  background: #fffdf8;
+  color: #173235;
+  padding: 15px 16px;
+  font: 24px "Libre Caslon Display", Georgia, serif;
+}
+.certificateNameForm input:focus {
+  outline: 3px solid #dfa858;
+  outline-offset: 2px;
+}
+.certificateNameForm small {
+  display: block;
+  margin: 9px 0 22px;
+  color: #657370;
+}
+.certificateNameForm .primary { width: 100%; justify-content: space-between; }
+.certificateScreen {
+  min-height: 100vh;
+  padding: 110px 4vw 60px;
+  background: radial-gradient(circle at 50% 15%, #315654, #0d282b 65%);
+}
+.certificateActions {
+  width: min(1100px, 100%);
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.certificateActions button { display: inline-flex; align-items: center; gap: 9px; }
+.certificateActions svg { width: 18px; }
+.certificate {
+  position: relative;
+  width: min(1100px, 100%);
+  aspect-ratio: 11 / 8.5;
+  margin: auto;
+  padding: 18px;
+  color: #172f32;
+  background:
+    radial-gradient(circle at 50% 45%, #fffefa 0%, #f7f0df 72%, #e8dcc2 100%);
+  border: 2px solid #d2a557;
+  box-shadow: 0 30px 80px #06151799;
+  overflow: hidden;
+}
+.certificate::before,
+.certificate::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.certificate::before {
+  inset: 8px;
+  border: 1px solid #315654;
+}
+.certificate::after {
+  inset: 25px;
+  border: 3px double #c69a4e;
+}
+.certificateInner {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 38px 62px 34px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.certificateTorch { width: 58px; height: 86px; margin-bottom: 3px; }
+.certificateTorch svg { width: 100%; height: 100%; }
+.flameOuter { fill: #d77b23; }
+.flameInner { fill: #f4c35f; }
+.torchBowl { fill: #244e50; }
+.torchStem { fill: #bf8b3d; }
+.torchBase { fill: #244e50; }
+.certificateKicker {
+  color: #805a26;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+}
+.certificate h1 {
+  margin: 8px 0 6px;
+  color: #173e42;
+  font: 58px/1 "Libre Caslon Display", Georgia, serif;
+}
+.certificatePresented {
+  margin: 8px 0 0;
+  color: #65706e;
+  font: italic 17px Georgia, serif;
+}
+.certificateRecipient {
+  width: min(710px, 92%);
+  margin: 8px 0 15px;
+  padding: 4px 18px 8px;
+  border-bottom: 2px solid #c39950;
+  color: #152f33;
+  font: clamp(38px, 5vw, 64px)/1.05 "Libre Caslon Display", Georgia, serif;
+}
+.certificateText {
+  max-width: 790px;
+  margin: 0;
+  color: #3c4f4e;
+  font: 16px/1.55 Georgia, serif;
+}
+.certificateMilestones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 18px 0 20px;
+}
+.certificateMilestones span {
+  padding: 5px 9px;
+  border: 1px solid #cdb889;
+  color: #5f4d2c;
+  background: #fffaf0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.certificateSignatures {
+  width: min(720px, 88%);
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+.certificateSignatures div { border-top: 1px solid #7f8984; padding-top: 6px; }
+.certificateSignatures b { display: block; font: 17px "Libre Caslon Display", Georgia, serif; }
+.certificateSignatures span { color: #75807c; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.certificateSeal {
+  position: absolute;
+  right: 45px;
+  bottom: 38px;
+  width: 66px;
+  height: 66px;
+  border: 3px double #c08b3c;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #b0762a;
+  font: 22px "Libre Caslon Display", Georgia, serif;
+  transform: rotate(-8deg);
+}
 .modalWrap {
   position: fixed;
   z-index: 50;
@@ -1071,6 +1236,16 @@ article,
   .journalDrawer { width: 100%; padding: 26px 20px; }
   .journalNotes textarea { min-height: 42vh; }
   .journalActions .journalClear { margin-left: 0; }
+  .certificateScreen { padding: 95px 14px 30px; }
+  .certificateActions { flex-wrap: wrap; }
+  .certificate { aspect-ratio: auto; min-height: 760px; padding: 10px; }
+  .certificate::after { inset: 18px; }
+  .certificateInner { padding: 30px 20px; }
+  .certificate h1 { font-size: 42px; }
+  .certificateRecipient { font-size: 38px; }
+  .certificateMilestones { gap: 6px; }
+  .certificateMilestones span { font-size: 9px; }
+  .certificateSignatures { width: 92%; gap: 24px; }
 }
 
 @media print {
@@ -1098,6 +1273,22 @@ article,
   body.journal-printing .journalStatus,
   body.journal-printing .journalActions { display: none!important; }
   body.journal-printing .journalPrintOnly pre { white-space: pre-wrap; color: #111; font: 12pt/1.5 Georgia, serif; }
+  body.certificate-printing { background: #fff; }
+  body.certificate-printing > #root .app > * { display: none!important; }
+  body.certificate-printing > #root .app > main,
+  body.certificate-printing main > .certificateScreen { display: block!important; }
+  body.certificate-printing .certificateScreen { min-height: 0; padding: 0; background: #fff; }
+  body.certificate-printing .certificateActions { display: none!important; }
+  body.certificate-printing .certificate {
+    display: block!important;
+    width: 11in;
+    height: 8.5in;
+    min-height: 0;
+    aspect-ratio: auto;
+    margin: 0;
+    box-shadow: none;
+    break-inside: avoid;
+  }
 }
 html[data-motion="off"] *,
 html[data-motion="off"] *:before {
