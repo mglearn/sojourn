@@ -857,7 +857,7 @@ function App() {
         <nav>
           <label className="languagePicker">
             <span aria-hidden="true">🌐</span>
-            <select aria-label="Language" value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <select aria-label={t.languageAria} value={language} onChange={(e) => setLanguage(e.target.value)}>
               {languages.map((item) => <option key={item.code} value={item.code}>{item.label}</option>)}
             </select>
           </label>
@@ -873,7 +873,7 @@ function App() {
           <button
             className="iconbtn"
             onClick={() => setSettings(true)}
-            aria-label="Settings"
+            aria-label={t.settingsAria}
           >
             <Settings />
           </button>
@@ -907,7 +907,7 @@ function App() {
               </div>
             </div>
             <div className="scrollCue">
-              SCROLL TO DISCOVER <span>↓</span>
+              {t.scrollCue} <span>↓</span>
             </div>
           </section>
         )}
@@ -1080,20 +1080,16 @@ function App() {
         {screen === "finish" && (
           <section className="finish">
             <div className="torch">✦</div>
-            <span className="eyebrow">JOURNEY COMPLETE</span>
+            <span className="eyebrow">{t.finishKicker}</span>
             <h1>
-              Your journey is
+              {t.finishTitle}
               <br />
-              <em>complete.</em>
+              <em>{t.finishTitleEm}</em>
             </h1>
-            <p>
-              You gathered evidence across 172 years of organizing. The lesson
-              of the journey is not that progress was inevitable—it is that
-              people built it, together, and kept going.
-            </p>
+            <p>{t.finishBody}</p>
             <form className="certificateNameForm" onSubmit={prepareCertificate}>
-              <span className="eyebrow">PREPARE YOUR CERTIFICATE</span>
-              <label htmlFor="certificate-name">Name as it should appear</label>
+              <span className="eyebrow">{t.certPrepare}</span>
+              <label htmlFor="certificate-name">{t.certNameLabel}</label>
               <input
                 id="certificate-name"
                 type="text"
@@ -1101,29 +1097,29 @@ function App() {
                 onChange={(event) => setCertificateName(event.target.value)}
                 autoComplete="name"
                 maxLength="70"
-                placeholder="Enter your full name"
+                placeholder={t.certNamePlaceholder}
                 required
               />
-              <small>Your name stays on this device and is not transmitted.</small>
+              <small>{t.certNamePrivacy}</small>
               <button className="primary" type="submit">
-                View achievement certificate <ArrowRight />
+                {t.certView} <ArrowRight />
               </button>
             </form>
           </section>
         )}
         {screen === "certificate" && (
           <section className="certificateScreen">
-            <div className="certificateActions" aria-label="Certificate actions">
+            <div className="certificateActions" aria-label={t.certActionsAria}>
               <button className="quiet dark" onClick={() => setScreen("finish")}>
-                <ChevronLeft /> Edit name
+                <ChevronLeft /> {t.certEditName}
               </button>
               <button className="primary" onClick={printCertificate}>
-                Print certificate <Printer />
+                {t.certPrint} <Printer />
               </button>
             </div>
-            <article className="certificate" aria-label={`Achievement certificate for ${certificateName}`}>
+            <article className="certificate" aria-label={`${t.certAriaPrefix} ${certificateName}`}>
               <div className="certificateInner">
-                <div className="certificateTorch" role="img" aria-label="Torch of equality">
+                <div className="certificateTorch" role="img" aria-label={t.certTorchAria}>
                   <svg viewBox="0 0 120 180" aria-hidden="true">
                     <path className="flameOuter" d="M61 5c8 28 29 35 28 61-1 19-13 35-30 35S28 87 29 67C30 44 50 32 61 5Z" />
                     <path className="flameInner" d="M60 38c3 13 14 19 13 31 0 9-6 17-14 17s-14-7-14-16c0-11 10-18 15-32Z" />
@@ -1132,24 +1128,21 @@ function App() {
                     <path className="torchBase" d="M42 165h36v10H42z" />
                   </svg>
                 </div>
-                <div className="certificateKicker">Official Certificate of Achievement</div>
+                <div className="certificateKicker">{t.certKicker}</div>
                 <h1>Suffrage Sojourn</h1>
-                <p className="certificatePresented">This certificate is proudly presented to</p>
+                <p className="certificatePresented">{t.certPresented}</p>
                 <div className="certificateRecipient">{certificateName}</div>
-                <p className="certificateText">
-                  for successfully completing the Suffrage Sojourn, gathering and evaluating
-                  evidence across five historic stops, and demonstrating an understanding that
-                  the Nineteenth Amendment was a milestone in the continuing journey toward
-                  equal voting access.
-                </p>
-                <div className="certificateMilestones" aria-label="Milestones earned">
-                  {levels.map((item) => (
-                    <span key={item.artifact}>{item.artifact}</span>
+                <p className="certificateText">{t.certText}</p>
+                <div className="certificateMilestones" aria-label={t.certMilestonesAria}>
+                  {levels.map((item, i) => (
+                    <span key={item.artifact}>
+                      {levelText[language]?.[i]?.artifact || item.artifact}
+                    </span>
                   ))}
                 </div>
                 <div className="certificateSignatures">
-                  <div><b>{certificateDate}</b><span>Date completed</span></div>
-                  <div><b>Suffrage Sojourn</b><span>Achievement verified</span></div>
+                  <div><b>{certificateDate}</b><span>{t.certDateLabel}</span></div>
+                  <div><b>Suffrage Sojourn</b><span>{t.certVerified}</span></div>
                 </div>
                 <div className="certificateSeal" aria-hidden="true">SS</div>
               </div>
@@ -1163,13 +1156,13 @@ function App() {
       {settings && (
         <div className="modalWrap" role="dialog" aria-modal="true">
           <div className="modal">
-            <button className="close" onClick={() => setSettings(false)}>
+            <button className="close" onClick={() => setSettings(false)} aria-label={t.closeAria}>
               <X />
             </button>
-            <span className="eyebrow">MAKE IT YOURS</span>
-            <h2>Game settings</h2>
+            <span className="eyebrow">{t.settingsKicker}</span>
+            <h2>{t.settingsTitle}</h2>
             <label>
-              Reading level
+              {t.readingLevel}
               <select value={grade} onChange={(e) => setGrade(e.target.value)}>
                 <option>K–2</option>
                 <option>3–5</option>
@@ -1179,8 +1172,8 @@ function App() {
             </label>
             <div className="toggleRow">
               <span>
-                <b>Sound & narration</b>
-                <small>Use device text-to-speech</small>
+                <b>{t.soundTitle}</b>
+                <small>{t.soundNote}</small>
               </span>
               <button
                 className={sound ? "on" : ""}
@@ -1191,8 +1184,8 @@ function App() {
             </div>
             <div className="toggleRow">
               <span>
-                <b>Gentle motion</b>
-                <small>Transitions and ambient effects</small>
+                <b>{t.motionTitle}</b>
+                <small>{t.motionNote}</small>
               </span>
               <button
                 className={motion ? "on" : ""}
@@ -1202,7 +1195,7 @@ function App() {
               </button>
             </div>
             <button className="reset" onClick={reset}>
-              <RotateCcw /> Reset all progress
+              <RotateCcw /> {t.resetAll}
             </button>
           </div>
         </div>
@@ -1210,7 +1203,7 @@ function App() {
       {teacher && (
         <div className="modalWrap" role="dialog" aria-modal="true">
           <div className="modal teacher">
-            <button className="close" onClick={() => setTeacher(false)}>
+            <button className="close" onClick={() => setTeacher(false)} aria-label={t.closeAria}>
               <X />
             </button>
             <span className="eyebrow">TEACHER MODE</span>
