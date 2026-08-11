@@ -1302,3 +1302,28 @@ html[data-motion="off"] *:before {
     transition: none !important;
   }
 }
+
+/* Licensing footer (injected at runtime by /activities/licensing-footer.js).
+   The shared script ships hub light-theme colors; recolor it for this dark
+   parchment palette. Selectors are body-prefixed so they outrank the script's
+   own #id rules, which are appended to <head> after this stylesheet. */
+body #lah-lic-footer {
+  border-top: 1px solid rgba(246, 239, 223, 0.16);
+  background: #0d2225;
+  color: rgba(246, 239, 223, 0.72);
+  font-family: "DM Sans", sans-serif;
+}
+body #lah-lic-footer a {
+  color: #e9bd72;
+}
+body #lah-lic-footer a:hover,
+body #lah-lic-footer a:focus-visible {
+  color: #fffdf8;
+}
+/* Keep it off the certificate and journal printouts. */
+@media print {
+  body.certificate-printing #lah-lic-footer,
+  body.journal-printing #lah-lic-footer {
+    display: none !important;
+  }
+}
