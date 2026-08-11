@@ -24,7 +24,7 @@ import {
   X,
 } from "lucide-react";
 import "./styles.css";
-import { languages, levelText, ui } from "./i18n";
+import { languages, langMeta, levelText, ui } from "./i18n";
 
 const asset = (name) => `${import.meta.env.BASE_URL}assets/${name}`;
 
@@ -367,11 +367,14 @@ function Journal({ journal, setJournal, activeStop, onClose, language, t }) {
   );
 }
 
-function speak(text) {
+function speak(text, locale) {
   if (!("speechSynthesis" in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.rate = 0.92;
+  // Without an explicit lang the browser narrates every chapter with its
+  // default voice, which reads the non-English text as gibberish.
+  if (locale) u.lang = locale;
   speechSynthesis.speak(u);
 }
 
@@ -750,7 +753,8 @@ function App() {
   }, [motion]);
   useEffect(() => {
     localStorage.setItem("sojourn-language", language);
-    document.documentElement.lang = language === "zh" ? "zh-Hans" : language;
+    document.documentElement.lang = langMeta(language).htmlLang;
+    document.documentElement.dir = langMeta(language).dir;
     const url = new URL(window.location.href);
     url.searchParams.set("lang", language);
     window.history.replaceState({}, "", url);
@@ -815,10 +819,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem("sojourn-journal", JSON.stringify(journal));
   }, [journal]);
-  const certificateDate = new Intl.DateTimeFormat(
-    language === "zh" ? "zh-CN" : language,
-    { year: "numeric", month: "long", day: "numeric" },
-  ).format(new Date());
+  const certificateDate = new Intl.DateTimeFormat(langMeta(language).locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
   const prepareCertificate = (event) => {
     event.preventDefault();
     const name = certificateName.trim();
@@ -964,7 +969,9 @@ function App() {
               </div>
               <button
                 className="listen"
-                onClick={() => speak(`${L.title}. ${L.intro}`)}
+                onClick={() =>
+                  speak(`${L.title}. ${L.intro}`, langMeta(language).locale)
+                }
               >
                 <Headphones /> {t.listen}
               </button>

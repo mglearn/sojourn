@@ -20,7 +20,7 @@ select {
 .skip {
   position: fixed;
   top: -60px;
-  left: 20px;
+  inset-inline-start: 20px;
   background: #fff;
   color: #111;
   padding: 12px;
@@ -53,7 +53,7 @@ button {
   background: none;
   font-weight: 700;
   letter-spacing: 0.12em;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 .brand i {
@@ -157,7 +157,7 @@ svg {
 .journalHead {
   display: flex;
   justify-content: space-between;
-  padding-right: 28px;
+  padding-inline-end: 28px;
 }
 .journalHead h2 {
   margin: 10px 0 4px;
@@ -189,7 +189,7 @@ svg {
 .journalPrompt {
   margin: 18px 0;
   padding: 16px 18px;
-  border-left: 4px solid #d59c4b;
+  border-inline-start: 4px solid #d59c4b;
   background: #e8dfcf;
 }
 .journalPrompt b {
@@ -241,7 +241,7 @@ svg {
   font-size: 11px;
 }
 .journalActions .journalClear {
-  margin-left: auto;
+  margin-inline-start: auto;
   color: #985344;
 }
 .journalPrintOnly { display: none; }
@@ -263,7 +263,7 @@ svg {
 .heroCopy {
   position: relative;
   max-width: 680px;
-  margin-left: 8vw;
+  margin-inline-start: 8vw;
 }
 .eyebrow {
   font-size: 11px;
@@ -332,7 +332,7 @@ svg {
 }
 .scrollCue {
   position: absolute;
-  right: 5vw;
+  inset-inline-end: 5vw;
   bottom: 30px;
   font-size: 9px;
   letter-spacing: 0.16em;
@@ -369,7 +369,7 @@ svg {
 .route:before {
   content: "";
   position: absolute;
-  left: 27px;
+  inset-inline-start: 27px;
   top: 30px;
   bottom: 30px;
   width: 1px;
@@ -381,7 +381,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 22px;
-  text-align: left;
+  text-align: start;
   background: #17383a;
   border: 1px solid #ffffff14;
   padding: 19px 24px;
@@ -446,7 +446,7 @@ svg {
   position: relative;
 }
 .back {
-  margin-left: -10px;
+  margin-inline-start: -10px;
   color: #c5d2cc;
 }
 .chapter {
@@ -530,7 +530,7 @@ svg {
 .chapterPlate figcaption {
   position: absolute;
   z-index: 1;
-  left: 18px;
+  inset-inline-start: 18px;
   bottom: 16px;
   padding: 10px 14px;
   background: #102d2ddd;
@@ -666,7 +666,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 14px;
-  text-align: left;
+  text-align: start;
   background: #fff;
   border: 1px solid #d9d0bf;
   color: #173233;
@@ -696,7 +696,7 @@ svg {
   border-color: #b16d59;
 }
 .answers button > svg {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .feedback {
   padding: 15px 18px;
@@ -732,7 +732,7 @@ svg {
   font-size: 11px;
 }
 .earned .primary {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .finish {
   min-height: 100vh;
@@ -785,7 +785,7 @@ svg {
   width: min(560px, 100%);
   margin-top: 34px;
   padding: 30px;
-  text-align: left;
+  text-align: start;
   background: #f7f1e5;
   color: #173235;
   border: 1px solid #e9bd72;
@@ -934,7 +934,7 @@ svg {
 .certificateSignatures span { color: #75807c; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
 .certificateSeal {
   position: absolute;
-  right: 45px;
+  inset-inline-end: 45px;
   bottom: 38px;
   width: 66px;
   height: 66px;
@@ -968,7 +968,7 @@ svg {
 }
 .close {
   position: absolute;
-  right: 18px;
+  inset-inline-end: 18px;
   top: 18px;
   border: 0;
   background: none;
@@ -1060,7 +1060,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  text-align: left;
+  text-align: start;
   border: 1px solid #c99747;
   background: #fff8e9;
   color: #173233;
@@ -1084,21 +1084,21 @@ svg {
 .lessonBody { max-width: 1180px; margin: auto; padding: 65px 5vw 100px; }
 .lessonBody > h2, .lessonBody section > h2 { font: 32px "Libre Caslon Display"; margin-top: 50px; }
 .lessonBody p, .lessonBody li { line-height: 1.65; }
-.centralQuestion { background: #0d3c58; color: white; padding: 32px 36px; border-left: 5px solid #eeab34; }
+.centralQuestion { background: #0d3c58; color: white; padding: 32px 36px; border-inline-start: 5px solid #eeab34; }
 .centralQuestion small, .exitTicket small { color: #f4ae32; font-weight: 700; letter-spacing: .16em; }
 .centralQuestion h2 { margin: 10px 0 0!important; font-size: 28px!important; line-height: 1.35; }
 .aceGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .aceGrid > section { position: relative; padding: 28px; border-top: 5px solid #0a3563; background: #fff; box-shadow: 0 8px 24px #3e342a10; }
-.aceGrid > section > b { position: absolute; right: 22px; top: 17px; width: 42px; height: 42px; display: grid; place-items: center; border: 2px solid #e9a62f; border-radius: 50%; color: #0a3563; font-size: 22px; }
+.aceGrid > section > b { position: absolute; inset-inline-end: 22px; top: 17px; width: 42px; height: 42px; display: grid; place-items: center; border: 2px solid #e9a62f; border-radius: 50%; color: #0a3563; font-size: 22px; }
 .aceGrid h3 { margin: 0; font: 27px "Libre Caslon Display"; }
 .aceGrid em { display: inline-block; margin: 7px 0 14px; color: #06767b; font-style: normal; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
 .aceGrid h4 { margin-bottom: 5px; }
-.aceGrid ul { padding-left: 19px; }
+.aceGrid ul { padding-inline-start: 19px; }
 .aceGrid small { display: block; padding-top: 15px; border-top: 1px solid #ddd4c5; color: #667773; line-height: 1.5; }
 .stems { display: grid; grid-template-columns: .5fr 1.5fr; gap: 35px; margin-top: 45px; padding: 32px; background: #e0eee9; }
 .stems h2 { margin: 0!important; }
 .stems p { margin: 4px 0 12px; }
-.stems b { color: #08787c; margin-right: 7px; }
+.stems b { color: #08787c; margin-inline-end: 7px; }
 .lessonColumns { display: grid; grid-template-columns: 1fr 1fr; gap: 45px; }
 .materials { display: flex; flex-wrap: wrap; gap: 9px; }
 .materials span { padding: 10px 13px; background: #fff; border: 1px solid #d4c9b7; font-size: 12px; }
@@ -1163,7 +1163,7 @@ article,
     flex-wrap: wrap;
   }
   .earned .primary {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
   .badges {
     flex-wrap: wrap;
@@ -1235,7 +1235,7 @@ article,
   .chapterPlate { height: 210px; }
   .journalDrawer { width: 100%; padding: 26px 20px; }
   .journalNotes textarea { min-height: 42vh; }
-  .journalActions .journalClear { margin-left: 0; }
+  .journalActions .journalClear { margin-inline-start: 0; }
   .certificateScreen { padding: 95px 14px 30px; }
   .certificateActions { flex-wrap: wrap; }
   .certificate { aspect-ratio: auto; min-height: 760px; padding: 10px; }
@@ -1301,6 +1301,36 @@ html[data-motion="off"] *:before {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* ── Right-to-left (Arabic, Urdu) ──────────────────────────────────────────
+   Layout flips on its own now that the physical margin/padding/border/offset
+   properties above are logical ones. What remains are the handful of things
+   with a baked-in side: the journal drawer's anchor and slide-in, the hero
+   scrim gradient, and the hover nudge on a map stop. */
+[dir="rtl"] .journalDrawer {
+  inset: 0 auto 0 0;
+  box-shadow: 20px 0 70px #0007;
+  animation-name: journalInRtl;
+}
+@keyframes journalInRtl {
+  from { transform: translateX(-100%); }
+}
+[dir="rtl"] .heroShade {
+  background:
+    linear-gradient(270deg, #091d28f2 0%, #09202bd4 35%, transparent 72%),
+    linear-gradient(0deg, #091f25af, transparent 45%);
+}
+[dir="rtl"] .stop:hover:not(:disabled) {
+  transform: translateX(-4px);
+}
+/* Arrow glyphs point the way forward, so mirror them with the text. */
+[dir="rtl"] .stop .arr,
+[dir="rtl"] .primary svg,
+[dir="rtl"] .back svg,
+[dir="rtl"] .answers button > svg,
+[dir="rtl"] .lessonLink svg {
+  transform: scaleX(-1);
 }
 
 /* Licensing footer (injected at runtime by /activities/licensing-footer.js).
