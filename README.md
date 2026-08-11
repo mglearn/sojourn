@@ -6,7 +6,9 @@ and one civic challenge each — no timer, no lost lives. Published at
 **https://mglearn.github.io/sojourn/** and listed on the
 [Learning Activities Hub](https://mglearn.github.io/activities/).
 
-Four languages (English, Español, Tiếng Việt, 中文), adjustable reading level
+Seven languages — English, Español, Tiếng Việt, العربية, हिन्दी, اردو, and 中文,
+matching the hub's canonical set, with right-to-left layout for Arabic and Urdu —
+adjustable reading level
 (K–2 · 3–5 · 6–8 · 9–12), optional narration, and a reduced-motion mode. Best fit
 is Grade 5 U.S. history, Grade 7 Texas history, Grade 8 U.S. history, and high
 school U.S. History. Teacher mode carries the lesson plan, discussion prompts,
@@ -65,7 +67,7 @@ shelf in teacher mode. No primary-source text is reproduced beyond short quoted
 excerpts.
 
 Scene artwork is original illustration in the style of a period archival print,
-not reproduced historical artwork. Content, code, artwork, and the four-language
+not reproduced historical artwork. Content, code, artwork, and the seven-language
 translations are produced with the help of generative-AI tools and refined under
 human editorial review. Translations are machine-assisted and should be reviewed
 by a local educator before classroom use.
